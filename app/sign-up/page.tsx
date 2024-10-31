@@ -17,7 +17,7 @@ export default function SignUp() {
   const [password, setPassword] = useState('')
   const [pendingVerification, setPendingVerification] = useState(false)
   const [code, setCode] = useState('')
-  const [error, setError] = useState('')
+  const [error, setError] = useState(''); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
@@ -71,8 +71,10 @@ export default function SignUp() {
         await setActive({ session: completeSignUp.createdSessionId })
         router.push('/dashboard')
       }
-    } catch (error) {
-      console.error(JSON.stringify(error, null, 2))
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            setError(error.message);
+          }
     } finally {
       setIsLoading(false)
     }

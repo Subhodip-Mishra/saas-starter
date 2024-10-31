@@ -14,7 +14,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 export default function SignIn() {
   const [emailAddress, setEmailAddress] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [error, setError] = useState(''); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { isLoaded, signIn, setActive } = useSignIn()
@@ -46,8 +46,10 @@ export default function SignIn() {
         console.log(JSON.stringify(result, null, 2))
         setError('An unexpected error occurred. Please try again.')
       }
-    } catch (error) {
-      console.error('Error',)
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            setError(error.message);
+          }
     } finally {
       setIsLoading(false)
     }
