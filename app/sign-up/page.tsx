@@ -71,9 +71,8 @@ export default function SignUp() {
         await setActive({ session: completeSignUp.createdSessionId })
         router.push('/dashboard')
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(JSON.stringify(error, null, 2))
-      setError(error.errors[0].message)
     } finally {
       setIsLoading(false)
     }

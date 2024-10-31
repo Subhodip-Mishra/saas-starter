@@ -46,9 +46,8 @@ export default function SignIn() {
         console.log(JSON.stringify(result, null, 2))
         setError('An unexpected error occurred. Please try again.')
       }
-    } catch (error: any) {
-      console.error('Error', error.errors[0].message)
-      setError(error.errors[0].message)
+    } catch (error) {
+      console.error('Error',)
     } finally {
       setIsLoading(false)
     }
