@@ -1,7 +1,7 @@
-import { clerkClient, clerkMiddleware, Client } from '@clerk/nextjs/server'
+import { clerkClient, clerkMiddleware, Client, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server';
 
-const publicRoutes = ["/", "/api/webhook/register", '/sign-up', '/sign-in'];
+const publicRoutes = createRouteMatcher(["/", "/api/webhook/register", '/sign-up', '/sign-in'])
 
 export default clerkMiddleware({
   publicRoutes,

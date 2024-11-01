@@ -16,10 +16,10 @@ export async function POST(req: Request) {
     const svix_timestamp = headerPayload.get("svix-timestamp")
     const svix_signature = headerPayload.get("svix-signature")
 
-    if(!svix_id || !svix_timestamp || !svix_signature){
+    if (!svix_id || !svix_timestamp || !svix_signature) {
         return new Response("Error occurred - No Svix header");
     }
-    
+
     const payload = await req.json();
     const body = JSON.stringify(payload);
 
@@ -30,32 +30,31 @@ export async function POST(req: Request) {
     try {
         event = wh.verify(body, {
             "svix-id": svix_id,
-            "svix-timestamp" : svix_timestamp,
-            "svix-signature" : svix_signature
-        }) as WebhookEvent; 
+            "svix-timestamp": svix_timestamp,
+            "svix-signature": svix_signature
+        }) as WebhookEvent;
     } catch (error) {
         console.error("Error verifying webhook", error);
-        return new Response("Error occurred", {status: 400});
+        return new Response("Error occurred", { status: 400 });
     }
 
-    const { id } = event.data
     const eventType = event.type
 
     // logs
 
-    if(eventType === "user.created"){
+    if (eventType === "user.created") {
         try {
-            const {email_addresses, primary_email_address_id} = event.data
-            console.log("email addresses",email_addresses, primary_email_address_id)
+            const { email_addresses, primary_email_address_id } = event.data
+            console.log("email addresses", email_addresses, primary_email_address_id)
 
-            
+
             //optional
             const primaryEmail = email_addresses.find(
-                (email) => email.id === primary_email_address_id 
+                (email) => email.id === primary_email_address_id
             )
 
-            if(!primaryEmail){
-                return new Response("NO Primary email found", {status: 400});
+            if (!primaryEmail) {
+                return new Response("NO Primary email found", { status: 400 });
             }
 
             //create a user in neon(postgresql)
@@ -68,13 +67,15 @@ export async function POST(req: Request) {
                 }
             })
             console.log("New user created", newUser);
-             
-        } catch (error) {
-            return new Response("Error creating user in database", {status: 400});
-            
+
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return new Response("Error creating user in database", { status: 400 });
+            }
+
         }
     }
 
-    return new Response("Webhook recived successfully", {status: 200});
+    return new Response("Webhook recived successfully", { status: 200 });
 
 }
