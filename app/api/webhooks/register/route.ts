@@ -57,7 +57,7 @@ export async function POST(req: Request) {
                     email: primaryEmail.email_address,
                     isSubscribed: false,
                 },
-            });
+            }) 
 
             console.log("New user created:", newUser);
 
